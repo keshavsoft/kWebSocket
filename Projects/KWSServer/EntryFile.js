@@ -2,6 +2,7 @@ const WebSocket = require('ws');
 let wss;
 const clients = new Map();
 let CommoninsertToClients = require('./insertToClients')
+let CommonOnMessage = require('./OnMessage/EntryFile');
 
 let StartFunc = (server) => {
     wss = new WebSocket.Server({ server });
@@ -16,13 +17,21 @@ let WsOnConnection = (ws, req) => {
     });
 
     ws.on('message', (data, isBinary) => {
-        console.log("aaaaaaaaaaa : ", data, isBinary);
+        console.log("aaaaaaaaaaa : ", data.toString(), isBinary);
 
         wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
                 client.send(data, { binary: isBinary });
             }
         });
+
+        CommonOnMessage({
+            inWss: wss,
+            inData: data,
+            inIsBinary: isBinary
+        });
+
+
         // CommonOnMessage({
         //     inMessageAsString: messageAsString,
         //     inClients: clients,
