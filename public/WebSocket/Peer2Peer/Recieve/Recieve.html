@@ -59,7 +59,7 @@
                         </li>
 
                         <li class="nav-item Bookings">
-                            <a class="nav-link active" aria-current="page" href="../WithChats/WithChats.html">
+                            <a class="nav-link active" aria-current="page" href="../Send/Send.html">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                                     class="bi d-block mx-auto mb-1" viewBox="0 0 16 16">
                                     <path
@@ -69,7 +69,7 @@
                                         d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z">
                                     </path>
                                 </svg>
-                                With Chats
+                                Send
                             </a>
                         </li>
 
@@ -212,6 +212,8 @@
     <main>
         <div class="container">
             <h1>Peer-to-Peer Cue System --- Sender</h1>
+            <span>text</span>
+
 
             <table class="display">
                 <tr>
@@ -220,7 +222,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <button type="button" id="receiver-id" class="btn btn-primary">Copy ID...</button>
+                        <button type="button" id="receiver-id" class="btn btn-primary"
+                            onclick="CopyToClipboard('receiver-id');return false;">Copy ID...</button>
                         <div id="receiver-id1" style="font-weight: bold;"
                             title="Copy this ID to the input on send.html.">ID:</div>
                     </td>
@@ -293,13 +296,31 @@
 
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
     <script type="text/javascript">
-        (function () {
 
+        function CopyToClipboard(id) {
+            var r = document.createRange();
+            r.selectNode(document.getElementById(id));
+            console.log("r : ", r);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(r);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+        };
+
+        var recvId = document.getElementById("receiver-id");
+
+        recvId.addEventListener("click", (event) => {
+            let jVarLocalCurrentTarget = event.currentTarget;
+
+            copyContent({ inDataToInsert: jVarLocalCurrentTarget.innerHTML }).then();
+        });
+
+        (function () {
             var lastPeerId = null;
             var peer = null; // Own peer object
             var peerId = null;
             var conn = null;
-            var recvId = document.getElementById("receiver-id");
+
             var status = document.getElementById("status");
             var message = document.getElementById("message");
             var standbyBox = document.getElementById("standby");
@@ -332,7 +353,10 @@
                     }
 
                     console.log('ID: ' + peer.id);
-                    recvId.innerHTML = "ID: " + peer.id;
+                    // recvId.innerHTML = "ID: " + peer.id;
+
+                    recvId.innerHTML = peer.id;
+
                     status.innerHTML = "Awaiting connection...";
 
                     webSocket.send(peer.id);
@@ -493,16 +517,23 @@
     </script>
 
     <script>
-        const copyContent = async () => {
-            try {
-                await navigator.clipboard.writeText("aaaaaaaaaaaaa");
-                console.log('Content copied to clipboard');
-            } catch (err) {
-                console.error('Failed to copy: ', err);
-            }
+        const copyContent = async ({ inDataToInsert }) => {
+            navigator.permissions.query({ name: "clipboard-write" }).then((result) => {
+                console.log('result : ', result);
+
+                if (result.state === "granted" || result.state === "prompt") {
+                    /* write to the clipboard now */
+                    try {
+                        navigator.clipboard.writeText(inDataToInsert).then();
+                        console.log('Content copied to clipboard');
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                    }
+                }
+            });
         };
 
-        copyContent().then();
+        //   copyContent().then();
     </script>
 
 </body>
