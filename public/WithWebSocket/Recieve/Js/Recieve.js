@@ -63,11 +63,23 @@ let jFStart = () => {
 
             console.log('ID: ' + peer.id);
             // recvId.innerHTML = "ID: " + peer.id;
-            webSocket.send(peer.id);
+            //  webSocket.send(peer.id);
+
+            jFLocalSendMessage({ inMessage: peer.id });
+
             recvId.innerHTML = peer.id;
 
             status.innerHTML = "Awaiting connection...";
         });
+
+        let jFLocalSendMessage = ({ inMessage }) => {
+            let jVarLocalObjectToSend = {};
+            jVarLocalObjectToSend.Type = "FromPeer";
+            jVarLocalObjectToSend.Message = inMessage;
+
+            webSocket.send(JSON.stringify(jVarLocalObjectToSend));
+        };
+
         peer.on('connection', function (c) {
             // Allow only a single connection
             if (conn && conn.open) {

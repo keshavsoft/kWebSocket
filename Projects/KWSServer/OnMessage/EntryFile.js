@@ -1,15 +1,8 @@
 let CommonMessageAsJson = require("./MessageAsJson/EntryFile");
 let CommonMessageAsString = require("./MessageAsString/EntryFile");
 
-let StartFunc = ({ inWss, inData, inIsBinary }) => {
-    let LocalWss = inWss;
+let StartFunc = ({ inData }) => {
     let LocalData = inData;
-
-    // LocalWss.clients.forEach(function each(client) {
-    //     if (client !== ws && client.readyState === WebSocket.OPEN) {
-    //         client.send(LocalData, { binary: isBinary });
-    //     }
-    // });
 
     try {
         LocalDataAsJson = JSON.parse(LocalData);

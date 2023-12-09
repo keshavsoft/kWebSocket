@@ -1,7 +1,11 @@
 let StartFunc = ({ inDataAsJson }) => {
     let LocalDataAsJson = inDataAsJson;
 
-    console.log("LocalDataAsJson : ", LocalDataAsJson);
+    if ("Type" in LocalDataAsJson) {
+        if (LocalDataAsJson.Type === "FromPeer") {
+            console.log("LocalDataAsJson : ", LocalDataAsJson.Message);
+        };
+    };
 };
 
 module.exports = StartFunc;
