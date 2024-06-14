@@ -1,53 +1,57 @@
-const WebSocket = require('ws');
+import { WebSocketServer } from 'ws';
+import { StartFunc as CommoninsertToClients } from './insertToClients.js';
+import { StartFunc as CommonOnMessage } from "./OnMessage/EntryFile.js";
+
 let wss;
+
 const clients = new Map();
-let CommoninsertToClients = require('./insertToClients')
-let CommonOnMessage = require('./OnMessage/EntryFile');
-let CommonSaveToJsonOnConnections = require("./LogHistory/OnConnection/EntryFile")
 
 let StartFunc = (server) => {
-    wss = new WebSocket.Server({ server });
+    wss = new WebSocketServer({ server });
 
     wss.on("connection", WsOnConnection);
 };
 
 let WsOnConnection = (ws, req) => {
+   console.log("IP address of the connected user is:",req.connection.remoteAddress);
     CommoninsertToClients({
         inClients: clients,
         ws
     });
 
-    CommonSaveToJsonOnConnections({
-        inVerifyToken: LocalFromVerifyToken,
-        inws: ws,
-        inClients: clients,
-        inRequest: req
-    });
+    let localWebSocketData=clients.get(ws);
+    // console.log("localWebSocketData",localWebSocketData);
+    
+    ws.send(JSON.stringify({ Type: 'GetWebSocketId', webSocketId: localWebSocketData.id }));
+    // CommonSaveToJsonOnConnections({
+    //     inVerifyToken: LocalFromVerifyToken,
+    //     inws: ws,
+    //     inClients: clients,
+    //     inRequest: req
+    // });
 
     ws.on('message', (data, isBinary) => {
-        console.log("aaaaaaaaaaa : ", data.toString(), isBinary);
-
-        // wss.clients.forEach(function each(client) {
-        //     if (client !== ws && client.readyState === WebSocket.OPEN) {
-        //         client.send(data, { binary: isBinary });
-        //     }
-        // });
-
+        
         CommonOnMessage({
-            inData: data
+            inData: data,
+            inws: ws,
+            inClients: clients,
+            inWss: wss
         });
 
-        setTimeout(function timeout() {
-            ws.send(Date.now());
-        }, 500);
     });
 
     ws.on('close', () => {
-        console.log('closed');
+        // wss.clients.forEach((client) => {
+        //     if (client !== ws && client.readyState === WebSocket.OPEN) {
+        //       client.send(JSON.stringify({ type: 'user offline', userId: localWebSocketData.id })); // Customize message, extract user ID from URL
+        //     }
+        // });
+        clients.delete(ws);
+        console.log("Number of users online: ", clients.size);
     });
 
-    // ws.send('Hai Socket established');
     ws.send(Date.now());
 };
 
-module.exports = StartFunc;
+export { StartFunc };

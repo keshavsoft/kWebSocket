@@ -1,25 +1,49 @@
-let CommonForWebSocketStart = require("./Projects/KWSServer/EntryFile");
-let CommonHomeController = require("./StartUp/Home.controller");
+import { GetFunc as routerFromStartUp } from "./StartUp/Home.controller.js";
 
-require('dotenv').config();
+import { StartFunc as StartFuncKWSServer } from "./Projects/KWSServer/EntryFile.js";
+import { StartFunc as StartFuncPortListen } from "./PortListen.js";
 
-const express = require('express');
-const http = require('http');
+import packageJSON from './package.json' assert {type: 'json'};
+
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const app = express();
-var path = require('path');
-var cookieParser = require('cookie-parser');
 const server = http.createServer(app);
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '7018');
+
+app.disable('x-powered-by');
 
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '100mb' }));
 
-app.get('/', CommonHomeController.GetFunc);
+app.use('/', express.static(path.join(path.resolve(), 'public')));
 
-CommonForWebSocketStart(server);
+app.get('/Version', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Accept,Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.end(packageJSON.version);
+});
+
+app.get('/AboutUs', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Accept,Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.end("KeshavSoft : 9848163021");
+});
+
+app.get('/', routerFromStartUp);
+
+StartFuncKWSServer(server);
 
 function normalizePort(val) {
     var port = parseInt(val, 10);
@@ -35,8 +59,4 @@ function normalizePort(val) {
     return false;
 };
 
-server.listen(port, () => {
-    console.log(`Listening in port : ${port}`);
-    console.log(`Click to open : http://localhost:${port}`);
-});
-
+server.listen(port, StartFuncPortListen);
