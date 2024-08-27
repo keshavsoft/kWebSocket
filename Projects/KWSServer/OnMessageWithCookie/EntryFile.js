@@ -1,9 +1,9 @@
 import { StartFunc as CommonMessageAsJson } from "./MessageAsJson/EntryFile.js";
 import { StartFunc as CommonMessageAsString } from "./MessageAsString/EntryFile.js";
 
-let StartFunc = ({ inData, inws, inClients, inWss }) => {
+let StartFunc = ({ inData, inws, inClients, inWss, inCookie }) => {
     let LocalData = inData;
-    console.log("ainws : ", inws.request);
+    let LocalCookie = inCookie;
 
     try {
         let LocalDataAsJson = JSON.parse(LocalData);

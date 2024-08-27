@@ -13,15 +13,15 @@ let StartFunc = (server) => {
 };
 
 let WsOnConnection = (ws, req) => {
-   console.log("IP address of the connected user is:",req.connection.remoteAddress);
+    console.log("IP address of the connected user is:", req.cookies, req.headers.cookie, req.connection.remoteAddress);
     CommoninsertToClients({
         inClients: clients,
         ws
     });
 
-    let localWebSocketData=clients.get(ws);
+    let localWebSocketData = clients.get(ws);
     // console.log("localWebSocketData",localWebSocketData);
-    
+
     ws.send(JSON.stringify({ Type: 'GetWebSocketId', webSocketId: localWebSocketData.id }));
     // CommonSaveToJsonOnConnections({
     //     inVerifyToken: LocalFromVerifyToken,
