@@ -1,4 +1,5 @@
 import { GetFunc as routerFromStartUp } from "./StartUp/Home.controller.js";
+import { GetFunc as LoginController } from "./StartUp/Login.controller.js";
 
 import { StartFunc as StartFuncKWSServer } from "./Projects/KWSServer/EntryFile.js";
 import { StartFunc as StartFuncPortListen } from "./PortListen.js";
@@ -42,6 +43,7 @@ app.get('/AboutUs', (req, res) => {
 });
 
 app.get('/', routerFromStartUp);
+app.get('/Login', LoginController);
 
 StartFuncKWSServer(server);
 

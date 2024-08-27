@@ -31,14 +31,12 @@ let WsOnConnection = (ws, req) => {
     // });
 
     ws.on('message', (data, isBinary) => {
-        
         CommonOnMessage({
             inData: data,
             inws: ws,
             inClients: clients,
             inWss: wss
         });
-
     });
 
     ws.on('close', () => {

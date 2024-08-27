@@ -4,15 +4,17 @@ import { StartFunc as StartFuncreturnOnlineClientsWOMe } from "./returnOnlineCli
 
 let StartFunc = ({ inDataAsString, inws, inClients }) => {
     let LocalDataAsSting = inDataAsString;
-    console.log("LocalDataAsSting : ", LocalDataAsSting);
+
     if (LocalDataAsSting === "returnOnlineClients") {
-        StartFuncreturnOnlineClients({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients});
+        StartFuncreturnOnlineClients({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients });
     };
+
     if (LocalDataAsSting === "GetWebSocketId") {
-        StartFuncGetWebSocketId({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients});
+        StartFuncGetWebSocketId({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients });
     };
+
     if (LocalDataAsSting === "returnOnlineClientsWOMe") {
-        StartFuncreturnOnlineClientsWOMe({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients});
+        StartFuncreturnOnlineClientsWOMe({ inDataAsString: LocalDataAsSting, inws: inws, inClients: inClients });
     };
 };
 
